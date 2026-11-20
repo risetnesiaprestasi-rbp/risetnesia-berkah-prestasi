@@ -252,3 +252,25 @@
     padding: 16px;
   }
 }
+.recommendation {
+  border-radius: var(--radius-md);
+  padding: 14px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.recommendation--release {
+  background: var(--color-release-bg);
+  color: var(--color-release-fg);
+}
+.recommendation--hold {
+  background: var(--color-hold-bg);
+  color: var(--color-hold-text);
+}
+.recommendation--reject {
+  background: var(--color-reject-bg);
+  color: var(--color-reject-text);
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

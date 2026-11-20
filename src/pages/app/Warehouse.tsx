@@ -8,6 +8,7 @@ import { SegmentedControl } from '../../components/SegmentedControl'
 import { SampleTag, StatusPill } from '../../components/StatusPill'
 import { QrPreview } from '../../components/QrPreview'
 import { STOCK_GD01 } from '../../data/mock'
+import { NOT_IN_PROTOTYPE, usePrototype } from '../../state/prototype'
 import './app.css'
 
 type Rule = 'fifo' | 'fefo'
@@ -20,13 +21,17 @@ const RULE_TEXT: Record<Rule, string> = {
 export default function Warehouse() {
   const [rule, setRule] = useState<Rule>('fefo')
   const [labelLot, setLabelLot] = useState('LOT-PD-2026-0142')
+  const [qty, setQty] = useState('600')
+  const { decisions, toast } = usePrototype()
 
   const rows = useMemo(() => {
     const key = rule === 'fifo' ? 'inDate' : 'expDate'
-    const releasable = STOCK_GD01.filter((r) => r.status === 'release').sort((a, b) => a[key].localeCompare(b[key]))
-    const locked = STOCK_GD01.filter((r) => r.status !== 'release')
+    // A decision saved in Lot Detail overrides the sample status (e.g. a lot put on Hold gets locked here).
+    const stock = STOCK_GD01.map((r) => ({ ...r, status: decisions[r.id] ?? r.status }))
+    const releasable = stock.filter((r) => r.status === 'release').sort((a, b) => a[key].localeCompare(b[key]))
+    const locked = stock.filter((r) => r.status !== 'release')
     return [...releasable.map((r, i) => ({ ...r, rank: `#${i + 1}` })), ...locked.map((r) => ({ ...r, rank: '—' }))]
-  }, [rule])
+  }, [rule, decisions])
 
   return (
     <AppShell
@@ -37,9 +42,9 @@ export default function Warehouse() {
           subtitle={<>Kartu stok per lot & lokasi rak · <SampleTag /></>}
           actions={
             <>
-              <Button variant="secondary">Scan QR / Barcode</Button>
-              <Button variant="secondary">Mutasi Antar-Gudang</Button>
-              <Button>+ Pengeluaran Stok</Button>
+              <Button variant="secondary" onClick={() => toast(`Scan QR / Barcode: ${NOT_IN_PROTOTYPE}`)}>Scan QR / Barcode</Button>
+              <Button variant="secondary" onClick={() => toast(`Mutasi Antar-Gudang: ${NOT_IN_PROTOTYPE}`)}>Mutasi Antar-Gudang</Button>
+              <Button onClick={() => toast(`Pengeluaran stok mengikuti urutan ${rule.toUpperCase()}: ${rows[0]?.id} dikeluarkan lebih dulu (simulasi).`)}>+ Pengeluaran Stok</Button>
             </>
           }
         />
@@ -99,7 +104,7 @@ export default function Warehouse() {
               <SelectField id="lbl-size" label="Ukuran label" gap={6} options={['100 × 50 mm', '75 × 50 mm']} />
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <TextField id="lbl-qty" label="Jumlah" gap={6} type="number" defaultValue={600} />
+              <TextField id="lbl-qty" label="Jumlah" gap={6} type="number" min={1} value={qty} onChange={(e) => setQty(e.target.value)} />
             </div>
           </div>
           <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-muted)' }}>Pratinjau cetak (printer thermal)</span>
@@ -113,7 +118,7 @@ export default function Warehouse() {
               <span>Pindai untuk cek mutu</span>
             </div>
           </div>
-          <Button size="bold">Cetak Label</Button>
+          <Button size="bold" onClick={() => toast(`Simulasi: ${qty || 0} label ${labelLot} dikirim ke printer thermal.`)}>Cetak Label</Button>
           <Link to={`/lacak?lot=${labelLot}`} style={{ fontSize: 14, fontWeight: 600 }}>Lihat tujuan QR (halaman publik)</Link>
         </Card>
       </div>

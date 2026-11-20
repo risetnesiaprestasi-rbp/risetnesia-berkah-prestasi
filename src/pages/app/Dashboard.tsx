@@ -1,15 +1,17 @@
 import { Link } from 'react-router-dom'
 import { AppShell, TopBar } from '../../components/AppShell'
-import { ButtonLink } from '../../components/Button'
+import { Button } from '../../components/Button'
 import { Card } from '../../components/Card'
 import { SelectField } from '../../components/Field'
 import { SampleTag, StatusPill } from '../../components/StatusPill'
 import { ACTION_ITEMS, KPIS, MONTHLY_VOLUME, PENDING_LOTS } from '../../data/mock'
+import { NOT_IN_PROTOTYPE, usePrototype } from '../../state/prototype'
 import './app.css'
 
 const BAR_MAX_PX = 170
 
 export default function Dashboard() {
+  const { decisions, toast } = usePrototype()
   const maxTons = Math.max(...MONTHLY_VOLUME.map((m) => m.tons))
 
   return (
@@ -22,11 +24,7 @@ export default function Dashboard() {
           actions={
             <>
               <SelectField id="per" label="Periode" hideLabel options={['Bulan ini', 'Kuartal ini', 'Tahun ini']} />
-              <ButtonLink to="/app/lot/LOT-PD-2026-0142">+ Registrasi Benih Sumber</ButtonLink>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14 }}>
-                <span className="avatar" aria-hidden="true">SA</span>
-                Super Admin
-              </span>
+              <Button onClick={() => toast(`Registrasi Benih Sumber: ${NOT_IN_PROTOTYPE}`)}>+ Registrasi Benih Sumber</Button>
             </>
           }
         />
@@ -67,9 +65,9 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      <Card title="Lot Menunggu Keputusan Mutu" titleSize="sm" actions={<Link to="/app/lot/LOT-PD-2026-0142" style={{ fontSize: 14, fontWeight: 600 }}>Lihat semua lot</Link>}>
+      <Card title="Lot Menunggu Keputusan Mutu" titleSize="sm" actions={<button type="button" className="link-btn" style={{ fontWeight: 600, padding: 0 }} onClick={() => toast(`Daftar semua lot: ${NOT_IN_PROTOTYPE}`)}>Lihat semua lot</button>}>
         <div className="table-wrap">
-          <table className="table" style={{ minWidth: 720 }}>
+          <table className="table" style={{ minWidth: 800 }}>
             <thead>
               <tr>
                 <th>No. Lot</th>
@@ -78,6 +76,7 @@ export default function Dashboard() {
                 <th>Tiket Lab</th>
                 <th>Status Uji</th>
                 <th>Rekomendasi Sistem</th>
+                <th>Keputusan</th>
                 <th><span className="sr-only">Aksi</span></th>
               </tr>
             </thead>
@@ -90,6 +89,7 @@ export default function Dashboard() {
                   <td>{l.ticket}</td>
                   <td>{l.testStatus}</td>
                   <td><StatusPill status={l.recommendation} /></td>
+                  <td>{decisions[l.id] ? <StatusPill status={decisions[l.id]} /> : <span style={{ color: 'var(--color-muted)' }}>Belum</span>}</td>
                   <td style={{ textAlign: 'right' }}>
                     <Link to={`/app/lot/${l.id}`} style={{ fontWeight: 600 }} aria-label={`Buka ${l.id}`}>Buka</Link>
                   </td>

@@ -1,11 +1,11 @@
 import { useState, type FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Logo } from '../components/Logo'
 import { Button } from '../components/Button'
 import { TextField } from '../components/Field'
+import { usePrototype, type Role } from '../state/prototype'
 import './login.css'
 
-type Role = 'super' | 'admin'
 const ROLES: { id: Role; name: string; sub: string }[] = [
   { id: 'super', name: 'Super Admin', sub: 'Central Data & Security' },
   { id: 'admin', name: 'Admin', sub: 'Physical Operation' },
@@ -13,12 +13,16 @@ const ROLES: { id: Role; name: string; sub: string }[] = [
 
 export default function Login() {
   const navigate = useNavigate()
+  const location = useLocation()
+  const { login, toast } = usePrototype()
   const [role, setRole] = useState<Role>('admin')
 
   const submit = (e: FormEvent) => {
     e.preventDefault()
-    // TODO: authenticate against the SQAS backend; role drives RBAC.
-    navigate('/app')
+    // Prototype: no real authentication. TODO: authenticate against the SQAS backend; role drives RBAC.
+    login(role)
+    const from = (location.state as { from?: string } | null)?.from
+    navigate(from && from.startsWith('/app') ? from : '/app')
   }
 
   return (
@@ -38,6 +42,7 @@ export default function Login() {
       <div className="login__panel">
         <form className="login__form" onSubmit={submit}>
           <h2 className="display" style={{ fontSize: 28 }}>Masuk</h2>
+          <p className="login__hint">Uji coba: isi email dan kata sandi bebas, lalu pilih peran.</p>
           <TextField id="email" label="Email atau ID staf" size="md" autoComplete="username" />
           <TextField id="pw" label="Kata sandi" type="password" size="md" autoComplete="current-password" />
           <fieldset className="fieldset">
@@ -52,7 +57,7 @@ export default function Login() {
             </div>
           </fieldset>
           <Button type="submit" size="bold" block style={{ fontWeight: 600, fontSize: 14 }}>Masuk</Button>
-          <a href="#reset" style={{ fontSize: 14, textAlign: 'center' }}>Lupa kata sandi? Hubungi Super Admin</a>
+          <button type="button" className="link-btn" onClick={() => toast('Hubungi Super Admin untuk reset kata sandi.')}>Lupa kata sandi? Hubungi Super Admin</button>
         </form>
       </div>
     </div>

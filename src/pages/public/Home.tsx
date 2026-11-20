@@ -4,13 +4,14 @@ import { Logo } from '../../components/Logo'
 import { Button, ButtonLink } from '../../components/Button'
 import { TextField } from '../../components/Field'
 import { QrScanIcon } from '../../components/Icons'
-import { PROCESS_STAGES, STAKEHOLDER_BENEFITS } from '../../data/mock'
+import { LOTS, PROCESS_STAGES, STAKEHOLDER_BENEFITS } from '../../data/mock'
+import { usePrototype } from '../../state/prototype'
 import './public.css'
 
 export default function Home() {
   const navigate = useNavigate()
   const [lot, setLot] = useState('')
-  const [cookieOk, setCookieOk] = useState(false)
+  const { cookieOk, acceptCookies } = usePrototype()
 
   const search = (e: FormEvent) => {
     e.preventDefault()
@@ -54,10 +55,16 @@ export default function Home() {
             />
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
               <Button type="submit" size="lg" style={{ flex: '1 1 160px' }}>Cari Lot</Button>
-              <ButtonLink to="/lacak" variant="outline" size="lg" style={{ flex: '1 1 160px' }}>
+              <ButtonLink to="/lacak?lot=LOT-PD-2026-0142&scan=1" variant="outline" size="lg" style={{ flex: '1 1 160px' }}>
                 <QrScanIcon />
                 Pindai QR
               </ButtonLink>
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8, fontSize: 13 }}>
+              <span style={{ color: 'var(--color-muted)' }}>Coba nomor contoh:</span>
+              {Object.keys(LOTS).slice(0, 3).map((id) => (
+                <button key={id} type="button" className="chip-btn" onClick={() => setLot(id)}>{id}</button>
+              ))}
             </div>
             <p style={{ fontSize: 13, color: 'var(--color-muted)' }}>
               Tanpa login. Hanya menampilkan data yang dinyatakan publik oleh pengelola.
@@ -129,7 +136,7 @@ export default function Home() {
               <p style={{ fontSize: 14, color: 'var(--color-ink-2)', flex: '1 1 400px' }}>
                 Situs ini memakai cookies yang diperlukan agar portal berfungsi. <a href="#cookies">Baca Kebijakan Cookies</a>.
               </p>
-              <Button onClick={() => setCookieOk(true)} style={{ padding: '0 20px' }}>Saya Mengerti</Button>
+              <Button onClick={acceptCookies} style={{ padding: '0 20px' }}>Saya Mengerti</Button>
             </div>
           </div>
         )}

@@ -144,3 +144,60 @@ export const STOCK_GD01: StockRow[] = [
   { id: 'LOT-KD-2026-0019', rack: 'C1', kg: '860', inLabel: '05 Okt 2026', inDate: '2026-10-05', expLabel: '05 Feb 2027', expDate: '2027-02-05', status: 'release' },
   { id: 'LOT-PD-2026-0145', rack: 'B4', kg: '3.100', inLabel: '03 Nov 2026', inDate: '2026-11-03', expLabel: '03 Mei 2027', expDate: '2027-05-03', status: 'hold' },
 ]
+
+/* ---------- Lot registry (prototype) ---------- */
+// Sample lots testers can look up. Lot detail / public pages are derived from
+// these so each lot shows a consistent status everywhere.
+
+type LotRecord = {
+  id: string
+  variety: string
+  cls: string
+  clsLong: string
+  status: Decision
+  weight: string
+  yieldPct: string
+  ticket: string
+  lab: { result: string; pass: boolean }[]
+}
+
+export const LOTS: Record<string, LotRecord> = {
+  'LOT-PD-2026-0142': {
+    id: 'LOT-PD-2026-0142', variety: '[Varietas A]', cls: 'BP', clsLong: 'BP (Benih Pokok)', status: 'release',
+    weight: '4.820 kg', yieldPct: '82,4%', ticket: 'LAB-2026-1207',
+    lab: [{ result: '[–] %', pass: true }, { result: '[–] %', pass: true }, { result: '[–] %', pass: true }],
+  },
+  'LOT-PD-2026-0145': {
+    id: 'LOT-PD-2026-0145', variety: '[Varietas A]', cls: 'BR', clsLong: 'BR (Benih Sebar)', status: 'hold',
+    weight: '3.100 kg', yieldPct: '79,8%', ticket: 'LAB-2026-1211',
+    lab: [{ result: '[–] %', pass: false }, { result: '[–] %', pass: true }, { result: '[–] %', pass: true }],
+  },
+  'LOT-JG-2026-0031': {
+    id: 'LOT-JG-2026-0031', variety: '[Varietas B]', cls: 'BD', clsLong: 'BD (Benih Dasar)', status: 'reject',
+    weight: '1.240 kg', yieldPct: '74,1%', ticket: 'LAB-2026-1214',
+    lab: [{ result: '[–] %', pass: false }, { result: '[–] %', pass: false }, { result: '[–] %', pass: true }],
+  },
+  'LOT-KD-2026-0019': {
+    id: 'LOT-KD-2026-0019', variety: '[Varietas C]', cls: 'BP', clsLong: 'BP (Benih Pokok)', status: 'release',
+    weight: '860 kg', yieldPct: '81,0%', ticket: 'LAB-2026-1220',
+    lab: [{ result: '[–] %', pass: true }, { result: '[–] %', pass: true }, { result: '[–] %', pass: true }],
+  },
+}
+
+export const LAB_PARAMS = [
+  { param: 'Daya berkecambah', standard: '≥ [STANDAR] %' },
+  { param: 'Kemurnian fisik', standard: '≥ [STANDAR] %' },
+  { param: 'Kadar air', standard: '≤ [STANDAR] %' },
+]
+
+/** Case/space-insensitive lookup, e.g. "lot-pd-2026-0142 " → the record. */
+export function findLot(query: string | null | undefined): LotRecord | undefined {
+  if (!query) return undefined
+  return LOTS[query.trim().toUpperCase().replace(/\s+/g, '')]
+}
+
+export const RECOMMENDATION_TEXT: Record<Decision, string> = {
+  release: 'Seluruh parameter memenuhi kriteria SOP (versi SOP [v3.1]). Tidak ada NC terbuka pada silsilah lot.',
+  hold: 'Daya berkecambah di bawah standar pada uji pertama. Disarankan uji ulang (re-test) sebelum keputusan akhir.',
+  reject: 'Dua parameter tidak memenuhi kriteria SOP. Lot disarankan ditolak dan ditandai di silsilah.',
+}
