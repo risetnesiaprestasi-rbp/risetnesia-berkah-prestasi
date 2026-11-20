@@ -1,0 +1,67 @@
+/* SQAS design tokens — taken from the "SQAS — Draft UI Web" design canvas. */
+:root {
+  /* Brand */
+  --color-primary: #1e5b3f;
+  --color-primary-hover: #123a28;
+  --color-primary-ink: #145233;
+  --color-primary-soft: #e3f1e8;
+  --color-primary-tint: #eef6f1;
+  --color-primary-on-dark: #cfe5d7;
+  --color-primary-on-dark-muted: #e4f0e8;
+  --color-accent: #b4610e; /* section eyebrows */
+
+  /* Neutrals */
+  --color-ink: #17211b;
+  --color-ink-2: #3b4640;
+  --color-muted: #56615a;
+  --color-muted-on-dark: #9fb0a5;
+  --color-on-dark: #d6ddd8;
+  --color-bg: #f6f7f4;
+  --color-surface: #ffffff;
+  --color-surface-2: #f1f3ef;
+  --color-chip: #edefea;
+  --color-border: #dde2dc;
+  --color-border-subtle: #edefea;
+  --color-border-strong: #cbd3cd;
+  --color-input-border: #b9c3bc;
+  --color-dashed: #9aa69e;
+  --color-timeline: #cfdad2;
+  --color-arrow: #7c8a80;
+
+  /* Status */
+  --color-release-bg: #e3f1e8;
+  --color-release-fg: #145233;
+  --color-release-border: #9cc3ab;
+  --color-hold-bg: #fbefd9;
+  --color-hold-fg: #6e4100;
+  --color-hold-text: #5a3a0a;
+  --color-hold-strong: #8a5a00;
+  --color-hold-border: #e2c48e;
+  --color-hold-surface: #fff6e9;
+  --color-hold-surface-border: #f0d9b5;
+  --color-reject-bg: #fde8e6;
+  --color-reject-fg: #8f1c12;
+  --color-reject-text: #5c130c;
+  --color-reject-strong: #b42318;
+  --color-reject-border: #eba9a2;
+  --color-info-bg: #eaf0f7;
+  --color-info-fg: #1d4470;
+  --color-info-text: #1d3550;
+
+  /* Type */
+  --font-sans: Inter, system-ui, sans-serif;
+  --font-display: 'Space Grotesk', Inter, sans-serif;
+
+  /* Shape */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-pill: 999px;
+  --shadow-float: 0 20px 40px rgba(0, 0, 0, 0.18);
+
+  /* Layout */
+  --container-wide: 1200px;
+  --container: 1100px;
+  --sidebar-width: 260px;
+}
